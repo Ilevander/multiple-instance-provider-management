@@ -1,4 +1,3 @@
-// This file contains the provider configuration for AWS.
 terraform {
   required_version = "~> 1.7"
   required_providers {
@@ -9,25 +8,30 @@ terraform {
   }
 }
 
-//Instance 1 of aws provider
-// This is the default provider instance, which is used when no alias is specified
+# Default AWS provider - EU West
 provider "aws" {
   region = "eu-west-1"
 }
 
-//Instance 2 of aws provider
-// This provider is aliased to "us-east" to differentiate it from the default provider instance
+# Aliased AWS provider - US East
 provider "aws" {
   region = "us-east-1"
   alias  = "us-east"
 }
 
-
+# EU West Bucket
 resource "aws_s3_bucket" "eu_west_1" {
-  bucket = "some-random-bucket-name-aosdhfoadhfu"
+  bucket   = "dell-alli-eu-west-${random_id.bucket_suffix.hex}"
+  provider = aws
 }
 
+# US East Bucket
 resource "aws_s3_bucket" "us_east_1" {
-  bucket   = "some-random-bucket-name-18736481364"
+  bucket   = "dell-alli-us-east-${random_id.bucket_suffix.hex}"
   provider = aws.us-east
+}
+
+# Random suffix to ensure uniqueness
+resource "random_id" "bucket_suffix" {
+  byte_length = 4
 }
